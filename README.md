@@ -15,3 +15,10 @@ Move with arrow keys. Just press a key and the snake will start going in that di
 Press 'p' for pause. When paused press an arrow key to continue playing, or press 'Space' to restart.
 
 If 'Game Over' press 'Space' to restart.
+
+
+Requirements:
+
+To play the game you need to have Raylib on your system. You can find out more by googling Raylib GitHub. 
+Now when you have Raylib, run this command in order to compile the main.cpp file: g++ main.cpp -o main -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
+And that is it. Now execute the output file called 'main' and have fun!
