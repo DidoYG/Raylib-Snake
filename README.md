@@ -21,4 +21,5 @@ Requirements:
 
 To play the game you need to have Raylib on your system. You can find out more by googling Raylib GitHub. 
 Now when you have Raylib, run this command in order to compile the main.cpp file: g++ main.cpp -o main -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
+
 And that is it. Now execute the output file called 'main' and have fun!
