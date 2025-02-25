@@ -27,10 +27,9 @@ Node createNode(int xPos, int yPos, int length, Direction dir=STOP){
     return Node(xPos, yPos, length, dir);
 }
 
-void resetSnake(vector<Node>& snake, string& text, int nodeLength){
+void resetSnake(vector<Node>& snake, int nodeLength){
     snake.clear();
     snake.push_back(createNode((SCREEN_W - nodeLength) / 2, (SCREEN_H - nodeLength) / 2, nodeLength));
-    text = "";
 }
 
 int getRandomInt(int min, int max) {
@@ -40,7 +39,7 @@ int getRandomInt(int min, int max) {
     return dist(gen);
 }
 
-void moveSnake(vector<Node>& snake, string& text){
+void moveSnake(vector<Node>& snake, string& text, bool& isGameOver){
     int lastXPos = snake[0].xPos;
     int lastYPos = snake[0].yPos;
 
@@ -59,6 +58,7 @@ void moveSnake(vector<Node>& snake, string& text){
 
     if(snake[0].yPos < 10 || snake[0].yPos > SCREEN_H - 20 || snake[0].xPos < 10 || snake[0].xPos > SCREEN_W - 20){
         text = "Game Over";
+        isGameOver = true;
     }
 
     for(int i = 1; i < snake.size(); i++){
@@ -73,6 +73,7 @@ void moveSnake(vector<Node>& snake, string& text){
 
         if(snake[0].xPos == snake[i].xPos && snake[0].yPos == snake[i].yPos){
             text = "Game Over";
+            isGameOver = true;
         }
     }
 
@@ -163,6 +164,9 @@ int main(){
 
     string text = "";
 
+    bool isPaused = false;
+    bool isGameOver = false;
+
     vector<Node> snake;
 
     Node fruit = spawnFruit(snake, nodeLength);
@@ -170,38 +174,58 @@ int main(){
     snake.push_back(createNode((SCREEN_W - nodeLength) / 2, (SCREEN_H - nodeLength) / 2, nodeLength));
 
     while(!WindowShouldClose()){
-        if(IsKeyPressed(KEY_UP) && snake[0].dir != DOWN){
+        if(IsKeyPressed(KEY_UP) && snake[0].dir != DOWN && !isGameOver){
             snake[0].dir = UP;
-            text = "";
+            
+            if(isPaused){
+                text = "";
+                isPaused = false;
+            }
         }
         
-        if(IsKeyPressed(KEY_DOWN)  && snake[0].dir != UP){
+        if(IsKeyPressed(KEY_DOWN)  && snake[0].dir != UP && !isGameOver){
             snake[0].dir = DOWN;
-            text = "";
+            
+            if(isPaused){
+                text = "";
+                isPaused = false;
+            }
         }
         
-        if(IsKeyPressed(KEY_LEFT) && snake[0].dir != RIGHT){
+        if(IsKeyPressed(KEY_LEFT) && snake[0].dir != RIGHT && !isGameOver){
             snake[0].dir = LEFT;
-            text = "";
+
+            if(isPaused){
+                text = "";
+                isPaused = false;
+            }
         }
         
-        if(IsKeyPressed(KEY_RIGHT) && snake[0].dir != LEFT){
+        if(IsKeyPressed(KEY_RIGHT) && snake[0].dir != LEFT && !isGameOver){
             snake[0].dir = RIGHT;
-            text = "";
+            
+            if(isPaused){
+                text = "";
+                isPaused = false;
+            }
         }
         
         if(IsKeyPressed(KEY_P)){
             text = "Paused";
+            isPaused = true;
         }
 
-        if(IsKeyPressed(KEY_SPACE) && text != ""){
+        if((IsKeyPressed(KEY_SPACE) && isPaused) || (IsKeyPressed(KEY_SPACE) && isGameOver)){
             timer = 0;
-            resetSnake(snake, text, nodeLength);
+            text = "";
+            isPaused = false;
+            isGameOver = false;
+            resetSnake(snake, nodeLength);
         }
 
         if(timer >= GetFPS() && text == ""){
             timer = 0;
-            moveSnake(snake, text);
+            moveSnake(snake, text, isGameOver);
         }
         else{
             timer += 10;
